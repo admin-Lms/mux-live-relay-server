@@ -39,25 +39,49 @@
     const ffmpeg = spawn(FFMPEG_PATH, [
       "-loglevel", "info",
 
-      "-fflags", "+nobuffer+genpts",
+      // Input
+      "-fflags", "+nobuffer+genpts+discardcorrupt",
+      "-flags", "low_delay",
+      "-analyzeduration", "1000000",
+      "-probesize", "1000000",
+
+      "-color_primaries", "bt709",
+      "-color_trc", "bt709",
+      "-colorspace", "bt709",
+
       "-f", "webm",
       "-i", "pipe:0",
 
+      // Video — high quality H264
       "-c:v", "libx264",
       "-preset", "veryfast",
       "-tune", "zerolatency",
-      "-b:v", "3000k",
-      "-maxrate", "3000k",
-      "-bufsize", "6000k",
+      "-profile:v", "high",
+      "-level", "4.2",
+      "-b:v", "4000k",
+      "-minrate", "4000k",
+      "-maxrate", "5000k",
+      "-bufsize", "8000k",
       "-pix_fmt", "yuv420p",
       "-g", "60",
       "-keyint_min", "60",
       "-sc_threshold", "0",
+      "-bf", "2",
+      "-crf", "18",
 
+      "-color_primaries:v", "bt709",
+      "-color_trc:v", "bt709",
+      "-colorspace:v", "bt709",
+
+      "-vf", "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p",
+
+      // Audio — high quality AAC
       "-c:a", "aac",
-      "-b:a", "128k",
+      "-b:a", "192k",
       "-ar", "48000",
+      "-ac", "2",
 
+      // Output
       "-f", "flv",
       rtmpUrl,
     ]);
@@ -72,7 +96,7 @@
       if (msg) console.log("[ffmpeg]", msg);
     });
 
-    ffmpeg.on("close", (code, signal) => { console.log(`[FFMPEG] exit code: ${code}, signal: ${signal}`);
+    ffmpeg.on("close", (code) => {
       console.log(`⏹ ffmpeg exit ${code}`);
       if (!clientClosed) ws.close(1011, "ffmpeg exited");
     });
