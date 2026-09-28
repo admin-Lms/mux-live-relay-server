@@ -49,6 +49,7 @@
       "-color_trc", "bt709",
       "-colorspace", "bt709",
 
+      "-f", "webm",
       "-i", "pipe:0",
 
       // Video — high quality H264
