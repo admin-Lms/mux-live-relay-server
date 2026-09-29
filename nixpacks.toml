@@ -2,7 +2,7 @@
 node = true
 
 [phases.setup]
-aptPkgs = ["...", "ffmpeg"]
+nixPkgs = ["...", "ffmpeg"]
 
 [start]
 cmd = "node index.js"
