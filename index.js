@@ -7,9 +7,9 @@
   const { WebSocketServer } = require("ws");
   const { spawn, execSync } = require("child_process");
 
-  const ffmpegStatic = require("ffmpeg-static");
-  const FFMPEG_PATH = ffmpegStatic;
-  console.log("✅ ffmpeg-static:", FFMPEG_PATH);
+  // const ffmpegStatic = require("ffmpeg-static");
+  const FFMPEG_PATH = "ffmpeg";
+  console.log("✅ Using system ffmpeg:", FFMPEG_PATH);
 
   const LIVE_URL = process.env.LIVE_URL || "http://localhost:8080";
   const PORT = process.env.PORT || 8080;
